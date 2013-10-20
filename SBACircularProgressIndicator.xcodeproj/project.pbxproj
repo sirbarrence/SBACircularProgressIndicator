@@ -21,6 +21,8 @@
 		4C286EDF180C26CE007C7DCD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C286EC1180C26CE007C7DCD /* UIKit.framework */; };
 		4C286EE7180C26CE007C7DCD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4C286EE5180C26CE007C7DCD /* InfoPlist.strings */; };
 		4C286EE9180C26CE007C7DCD /* SBACircularProgressIndicatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C286EE8180C26CE007C7DCD /* SBACircularProgressIndicatorTests.m */; };
+		4C286EF3180C26E8007C7DCD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C286EF2180C26E8007C7DCD /* QuartzCore.framework */; };
+		4C286EF6180C271A007C7DCD /* SBACircularProgressIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C286EF5180C271A007C7DCD /* SBACircularProgressIndicator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,9 @@
 		4C286EE4180C26CE007C7DCD /* SBACircularProgressIndicatorTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SBACircularProgressIndicatorTests-Info.plist"; sourceTree = "<group>"; };
 		4C286EE6180C26CE007C7DCD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4C286EE8180C26CE007C7DCD /* SBACircularProgressIndicatorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SBACircularProgressIndicatorTests.m; sourceTree = "<group>"; };
+		4C286EF2180C26E8007C7DCD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		4C286EF4180C271A007C7DCD /* SBACircularProgressIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBACircularProgressIndicator.h; sourceTree = "<group>"; };
+		4C286EF5180C271A007C7DCD /* SBACircularProgressIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBACircularProgressIndicator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +65,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C286EF3180C26E8007C7DCD /* QuartzCore.framework in Frameworks */,
 				4C286EC0180C26CE007C7DCD /* CoreGraphics.framework in Frameworks */,
 				4C286EC2180C26CE007C7DCD /* UIKit.framework in Frameworks */,
 				4C286EBE180C26CE007C7DCD /* Foundation.framework in Frameworks */,
@@ -101,6 +107,7 @@
 		4C286EBC180C26CE007C7DCD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4C286EF2180C26E8007C7DCD /* QuartzCore.framework */,
 				4C286EBD180C26CE007C7DCD /* Foundation.framework */,
 				4C286EBF180C26CE007C7DCD /* CoreGraphics.framework */,
 				4C286EC1180C26CE007C7DCD /* UIKit.framework */,
@@ -119,6 +126,8 @@
 				4C286ED3180C26CE007C7DCD /* SBAViewController.m */,
 				4C286ED5180C26CE007C7DCD /* Images.xcassets */,
 				4C286EC4180C26CE007C7DCD /* Supporting Files */,
+				4C286EF4180C271A007C7DCD /* SBACircularProgressIndicator.h */,
+				4C286EF5180C271A007C7DCD /* SBACircularProgressIndicator.m */,
 			);
 			path = SBACircularProgressIndicator;
 			sourceTree = "<group>";
@@ -252,6 +261,7 @@
 			files = (
 				4C286ECA180C26CE007C7DCD /* main.m in Sources */,
 				4C286ED4180C26CE007C7DCD /* SBAViewController.m in Sources */,
+				4C286EF6180C271A007C7DCD /* SBACircularProgressIndicator.m in Sources */,
 				4C286ECE180C26CE007C7DCD /* SBAAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

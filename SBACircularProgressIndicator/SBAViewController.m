@@ -7,8 +7,12 @@
 //
 
 #import "SBAViewController.h"
+#import "SBACircularProgressIndicator.h"
 
 @interface SBAViewController ()
+
+@property (nonatomic, strong) SBACircularProgressIndicator *ind;
+@property (weak, nonatomic) IBOutlet UITextField *widthText;
 
 @end
 
@@ -17,13 +21,24 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+	self.ind = [[SBACircularProgressIndicator alloc] initWithFrame:CGRectMake(50, 50, 20, 20)];
+	[self.view addSubview:self.ind];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)doThing:(id)sender
+{
+	[self.ind startIndeterminateAnimation];
+}
+
+- (IBAction)doOtherThing:(id)sender
+{
+	[self.ind stopIndeterminateAnimation];
 }
 
 @end
