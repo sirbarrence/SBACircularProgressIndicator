@@ -100,7 +100,7 @@
 	self.circleLayer.lineWidth = self.circlePath.lineWidth;
 	self.indeterminateArcPath.lineWidth = _lineWidth + 2;
 	self.indeterminateArcLayer.lineWidth = self.indeterminateArcPath.lineWidth;
-	self.progressLayer.lineWidth = _lineWidth + 2;
+	self.progressLayer.lineWidth = _lineWidth;
 }
 
 #pragma mark - Public
@@ -158,17 +158,22 @@
 	self.indeterminateArcLayer.hidden = YES;
 }
 
-- (void)setProgress:(CGFloat)progress
+- (void)setProgress:(CGFloat)newProgress
 {
-	NSParameterAssert(progress >= 0 && progress <= 1);
+	NSParameterAssert(newProgress >= 0 && newProgress <= 1);
 
 	[self stopIndeterminateAnimation];
-	if (progress == _progress) {
-		return;
+
+	self.progressLayer.hidden = NO;
+
+	if (_progress == 0 && newProgress > 0) {
+		self.progressLayer.lineWidth = _lineWidth + 2;
+	} else if (_progress > 0 && newProgress == 0) {
+		self.progressLayer.lineWidth = _lineWidth;
 	}
 	
-	_progress = progress;
-	self.progressLayer.hidden = NO;
+	_progress = newProgress;
+
 	self.progressLayer.strokeEnd = _progress;
 }
 
