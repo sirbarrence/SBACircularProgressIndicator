@@ -10,9 +10,11 @@
 #import "SBACircularProgressIndicator.h"
 
 @interface SBAViewController ()
+<UITextFieldDelegate>
 
 @property (nonatomic, strong) SBACircularProgressIndicator *ind;
 @property (weak, nonatomic) IBOutlet UITextField *widthText;
+@property (weak, nonatomic) IBOutlet UIStepper *stepper;
 
 @end
 
@@ -23,6 +25,12 @@
     [super viewDidLoad];
 	self.ind = [[SBACircularProgressIndicator alloc] initWithFrame:CGRectMake(50, 50, 20, 20)];
 	[self.view addSubview:self.ind];
+}
+
+- (IBAction)stepperChanged:(id)sender
+{
+	[self.ind setProgress:self.stepper.value / 100];
+	self.widthText.text = [NSString stringWithFormat:@"%d", [[NSNumber numberWithFloat:self.stepper.value] intValue]];
 }
 
 - (void)didReceiveMemoryWarning
@@ -40,5 +48,13 @@
 {
 	[self.ind stopIndeterminateAnimation];
 }
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+	[self.ind setProgress:[self.widthText.text floatValue] / 100];
+	return YES;
+}
+
+
 
 @end

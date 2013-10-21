@@ -21,11 +21,10 @@
 @property (nonatomic, strong) CAShapeLayer *indeterminateArcLayer;
 
 @property (nonatomic, strong) UIBezierPath *progressPath;
+@property (nonatomic, strong) CAShapeLayer *progressLayer;
 
 @property (nonatomic, assign) CGFloat maxLineWidth;
-@property (nonatomic, assign) CGFloat arcWidth;
-
-@property (nonatomic, assign) CGFloat curProgress;
+@property (nonatomic, assign) CGFloat diameter;
 
 @end
 
@@ -36,19 +35,17 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-//		self.backgroundColor = [UIColor redColor];
 		self.layer.opacity = 0.75;
 		_lineWidth = 1.0f;
-		CGFloat diameter = frame.size.width;
-		_maxLineWidth = diameter / 2;
+		_diameter = frame.size.width;
+		_maxLineWidth = _diameter / 2;
 
-		CGRect circleRect = CGRectMake(0, 0, diameter, diameter);
+		CGRect circleRect = CGRectMake(0, 0, _diameter, _diameter);
 		_circlePath = [UIBezierPath bezierPathWithOvalInRect:circleRect];
 		_circleLayer = [CAShapeLayer layer];
 		_circleLayer.path = _circlePath.CGPath;
 		_circleLayer.strokeColor = self.tintColor.CGColor;
 		_circleLayer.fillColor = [UIColor clearColor].CGColor;
-//		_circleLayer.backgroundColor = [UIColor orangeColor].CGColor;
 		[self.layer addSublayer:_circleLayer];
 		_circleLayer.bounds = self.layer.bounds;
 		_circleLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
@@ -56,7 +53,7 @@
 		_indeterminateArcPath =
 		[UIBezierPath
 		 bezierPathWithArcCenter:(CGPoint){CGRectGetMidX(circleRect), CGRectGetMidY(circleRect)}
-		 radius:diameter / 2 - 1
+		 radius:_diameter / 2 - 1
 		 startAngle:DEGREES_TO_RADIANS(45)
 		 endAngle:DEGREES_TO_RADIANS(135)
 		 clockwise:YES];
@@ -64,11 +61,24 @@
 		_indeterminateArcLayer.path = _indeterminateArcPath.CGPath;
 		_indeterminateArcLayer.strokeColor = self.tintColor.CGColor;
 		_indeterminateArcLayer.fillColor = [UIColor clearColor].CGColor;
-//		_indeterminateArcLayer.backgroundColor = [UIColor redColor].CGColor;
 		_indeterminateArcLayer.lineCap = kCALineCapSquare;
 		[self.layer addSublayer:_indeterminateArcLayer];
 		_indeterminateArcLayer.bounds = self.layer.bounds;
 		_indeterminateArcLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
+		
+		circleRect = CGRectMake(1, 1, _diameter - 2, _diameter - 2);
+		_progressPath = [UIBezierPath bezierPathWithOvalInRect:circleRect];
+
+		_progressLayer = [CAShapeLayer layer];
+		_progressLayer.path = _progressPath.CGPath;
+		_progressLayer.strokeColor = self.tintColor.CGColor;
+		_progressLayer.fillColor = [UIColor clearColor].CGColor;
+		_progressLayer.lineCap = kCALineCapSquare;
+		_progressLayer.strokeStart = 0;
+		_progressLayer.strokeEnd = 0;
+		[self.layer addSublayer:_progressLayer];
+		_progressLayer.bounds = self.layer.bounds;
+		_progressLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
 		
 		[self adjustLineWidth:1.0f];
     }
@@ -79,6 +89,7 @@
 {
 	self.circleLayer.strokeColor = self.tintColor.CGColor;
 	self.indeterminateArcLayer.strokeColor = self.tintColor.CGColor;
+	self.progressLayer.strokeColor = self.tintColor.CGColor;
 }
 
 - (void)adjustLineWidth:(CGFloat)newWidth
@@ -89,6 +100,7 @@
 	self.circleLayer.lineWidth = self.circlePath.lineWidth;
 	self.indeterminateArcPath.lineWidth = _lineWidth + 2;
 	self.indeterminateArcLayer.lineWidth = self.indeterminateArcPath.lineWidth;
+	self.progressLayer.lineWidth = _lineWidth + 2;
 }
 
 #pragma mark - Public
@@ -115,6 +127,9 @@
 		return;
 	}
 	
+	self.indeterminateArcLayer.hidden = NO;
+	self.progressLayer.hidden = YES;
+	
 	CATransform3D origTransform = _indeterminateArcLayer.transform;
 	CATransform3D halfTransform = CATransform3DRotate(origTransform, DEGREES_TO_RADIANS(180), 0, 0, 1);
 	CATransform3D rotTransform = CATransform3DRotate(origTransform, DEGREES_TO_RADIANS(360), 0, 0, 1);
@@ -139,13 +154,22 @@
 
 - (void)stopIndeterminateAnimation
 {
-	[_indeterminateArcLayer removeAnimationForKey:@"transform"];
+	[self.indeterminateArcLayer removeAnimationForKey:@"transform"];
+	self.indeterminateArcLayer.hidden = YES;
 }
 
-- (void)setProgressTo:(CGFloat)progress
+- (void)setProgress:(CGFloat)progress
 {
+	NSParameterAssert(progress >= 0 && progress <= 1);
+
 	[self stopIndeterminateAnimation];
+	if (progress == _progress) {
+		return;
+	}
 	
+	_progress = progress;
+	self.progressLayer.hidden = NO;
+	self.progressLayer.strokeEnd = _progress;
 }
 
 @end
