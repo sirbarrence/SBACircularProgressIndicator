@@ -18,4 +18,11 @@
 - (void)startIndeterminateAnimation;
 - (void)stopIndeterminateAnimation;
 
+/**
+ *  Set the progess indicator to display a certain percentage.
+ *
+ *  @param progress A float between 0 (0%) and 1 (100%).
+ */
+- (void)setProgressTo:(CGFloat)progress;
+
 @end

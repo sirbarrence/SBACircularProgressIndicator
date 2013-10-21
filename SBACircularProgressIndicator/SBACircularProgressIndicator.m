@@ -16,16 +16,16 @@
 
 @property (nonatomic, strong) UIBezierPath *circlePath;
 @property (nonatomic, strong) CAShapeLayer *circleLayer;
-@property (nonatomic, strong) UIView *circleView;
 
-@property (nonatomic, strong) UIBezierPath *arcPath;
-@property (nonatomic, strong) CAShapeLayer *arcLayer;
-@property (nonatomic, strong) UIView *arcView;
+@property (nonatomic, strong) UIBezierPath *indeterminateArcPath;
+@property (nonatomic, strong) CAShapeLayer *indeterminateArcLayer;
 
 @property (nonatomic, strong) UIBezierPath *progressPath;
 
 @property (nonatomic, assign) CGFloat maxLineWidth;
 @property (nonatomic, assign) CGFloat arcWidth;
+
+@property (nonatomic, assign) CGFloat curProgress;
 
 @end
 
@@ -49,32 +49,26 @@
 		_circleLayer.strokeColor = self.tintColor.CGColor;
 		_circleLayer.fillColor = [UIColor clearColor].CGColor;
 //		_circleLayer.backgroundColor = [UIColor orangeColor].CGColor;
-		_circleView = [[UIView alloc] initWithFrame:self.bounds];
-//		_circleView.backgroundColor = [UIColor greenColor];
-		_circleView.layer.opacity = 0.75f;
-		[_circleView.layer addSublayer:_circleLayer];
-		_circleLayer.bounds = _circleView.layer.bounds;
-		_circleLayer.position = CGPointMake(_circleView.bounds.size.width / 2, _circleView.bounds.size.height / 2);
-		[self addSubview:_circleView];
+		[self.layer addSublayer:_circleLayer];
+		_circleLayer.bounds = self.layer.bounds;
+		_circleLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
 		
-		_arcPath =
+		_indeterminateArcPath =
 		[UIBezierPath
 		 bezierPathWithArcCenter:(CGPoint){CGRectGetMidX(circleRect), CGRectGetMidY(circleRect)}
-		 radius:diameter / 2
+		 radius:diameter / 2 - 1
 		 startAngle:DEGREES_TO_RADIANS(45)
 		 endAngle:DEGREES_TO_RADIANS(135)
 		 clockwise:YES];
-		_arcLayer = [CAShapeLayer layer];
-		_arcLayer.path = _arcPath.CGPath;
-		_arcLayer.strokeColor = self.tintColor.CGColor;
-		_arcLayer.fillColor = [UIColor clearColor].CGColor;
-//		_arcLayer.backgroundColor = [UIColor redColor].CGColor;
-		_arcLayer.lineCap = kCALineCapSquare;
-		_arcView = [[UIView alloc] initWithFrame:self.bounds];
-		[_arcView.layer addSublayer:_arcLayer];
-		_arcLayer.bounds = _arcView.layer.bounds;
-		_arcLayer.position = CGPointMake(_arcView.bounds.size.width / 2, _arcView.bounds.size.height / 2);
-		[self addSubview:_arcView];
+		_indeterminateArcLayer = [CAShapeLayer layer];
+		_indeterminateArcLayer.path = _indeterminateArcPath.CGPath;
+		_indeterminateArcLayer.strokeColor = self.tintColor.CGColor;
+		_indeterminateArcLayer.fillColor = [UIColor clearColor].CGColor;
+//		_indeterminateArcLayer.backgroundColor = [UIColor redColor].CGColor;
+		_indeterminateArcLayer.lineCap = kCALineCapSquare;
+		[self.layer addSublayer:_indeterminateArcLayer];
+		_indeterminateArcLayer.bounds = self.layer.bounds;
+		_indeterminateArcLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
 		
 		[self adjustLineWidth:1.0f];
     }
@@ -84,17 +78,8 @@
 - (void)tintColorDidChange
 {
 	self.circleLayer.strokeColor = self.tintColor.CGColor;
-	self.arcLayer.strokeColor = self.tintColor.CGColor;
+	self.indeterminateArcLayer.strokeColor = self.tintColor.CGColor;
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 - (void)adjustLineWidth:(CGFloat)newWidth
 {
@@ -102,8 +87,8 @@
 	self.circlePath.lineWidth = _lineWidth;
 	self.circleLayer.path = self.circlePath.CGPath;
 	self.circleLayer.lineWidth = self.circlePath.lineWidth;
-	self.arcPath.lineWidth = _lineWidth + 2;
-	self.arcLayer.lineWidth = self.arcPath.lineWidth;
+	self.indeterminateArcPath.lineWidth = _lineWidth + 2;
+	self.indeterminateArcLayer.lineWidth = self.indeterminateArcPath.lineWidth;
 }
 
 #pragma mark - Public
@@ -125,18 +110,18 @@
 
 - (void)startIndeterminateAnimation
 {
-	if ([_arcLayer animationForKey:@"transform"]) {
+	if ([_indeterminateArcLayer animationForKey:@"transform"]) {
 		// already animating
 		return;
 	}
 	
-	CATransform3D origTransform = _arcLayer.transform;
+	CATransform3D origTransform = _indeterminateArcLayer.transform;
 	CATransform3D halfTransform = CATransform3DRotate(origTransform, DEGREES_TO_RADIANS(180), 0, 0, 1);
 	CATransform3D rotTransform = CATransform3DRotate(origTransform, DEGREES_TO_RADIANS(360), 0, 0, 1);
 	
 	// Change model value first so the arc won't snap back to the starting transform
 	// when the animation completes.
-	_arcLayer.transform = rotTransform;
+	_indeterminateArcLayer.transform = rotTransform;
 	
 	CAKeyframeAnimation *anim = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
 	anim.rotationMode = kCAAnimationRotateAuto;
@@ -149,12 +134,18 @@
 	anim.repeatCount = HUGE_VALF;
 	// Using same key as the animation's property key prevents the initial transform
 	// property change's implicit animation from happening.
-	[_arcLayer addAnimation:anim forKey:@"transform"];
+	[_indeterminateArcLayer addAnimation:anim forKey:@"transform"];
 }
 
 - (void)stopIndeterminateAnimation
 {
-	[_arcLayer removeAnimationForKey:@"transform"];
+	[_indeterminateArcLayer removeAnimationForKey:@"transform"];
+}
+
+- (void)setProgressTo:(CGFloat)progress
+{
+	[self stopIndeterminateAnimation];
+	
 }
 
 @end
