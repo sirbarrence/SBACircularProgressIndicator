@@ -11,8 +11,17 @@
 
 #define   DEGREES_TO_RADIANS(degrees)  ((M_PI * degrees)/ 180)
 
-@interface SBACircularProgressIndicator ()
+/**
+ *  The starting angle of the indeterminate arc.
+ */
+static CGFloat IndeterminateArcStartAngle = 45.0f;
 
+/**
+ *  The starting length of the indeterminate arc.
+ */
+static CGFloat IndeterminateArcLength = 90.0f;
+
+@interface SBACircularProgressIndicator ()
 
 @property (nonatomic, strong) UIBezierPath *circlePath;
 @property (nonatomic, strong) CAShapeLayer *circleLayer;
@@ -35,72 +44,70 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-		self.layer.opacity = 0.75;
-		_lineWidth = 1.0f;
-		_diameter = frame.size.width;
-		_maxLineWidth = _diameter / 2;
-
-		CGRect circleRect = CGRectMake(0, 0, _diameter, _diameter);
-		_circlePath = [UIBezierPath bezierPathWithOvalInRect:circleRect];
-		_circleLayer = [CAShapeLayer layer];
-		_circleLayer.path = _circlePath.CGPath;
-		_circleLayer.strokeColor = self.tintColor.CGColor;
-		_circleLayer.fillColor = [UIColor clearColor].CGColor;
-		[self.layer addSublayer:_circleLayer];
-		_circleLayer.bounds = self.layer.bounds;
-		_circleLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
-		
-		_indeterminateArcPath =
-		[UIBezierPath
-		 bezierPathWithArcCenter:(CGPoint){CGRectGetMidX(circleRect), CGRectGetMidY(circleRect)}
-		 radius:_diameter / 2 - 1
-		 startAngle:DEGREES_TO_RADIANS(45)
-		 endAngle:DEGREES_TO_RADIANS(135)
-		 clockwise:YES];
-		_indeterminateArcLayer = [CAShapeLayer layer];
-		_indeterminateArcLayer.path = _indeterminateArcPath.CGPath;
-		_indeterminateArcLayer.strokeColor = self.tintColor.CGColor;
-		_indeterminateArcLayer.fillColor = [UIColor clearColor].CGColor;
-		_indeterminateArcLayer.lineCap = kCALineCapSquare;
-		[self.layer addSublayer:_indeterminateArcLayer];
-		_indeterminateArcLayer.bounds = self.layer.bounds;
-		_indeterminateArcLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
-		
-		circleRect = CGRectMake(1, 1, _diameter - 2, _diameter - 2);
-		_progressPath = [UIBezierPath bezierPathWithOvalInRect:circleRect];
-
-		_progressLayer = [CAShapeLayer layer];
-		_progressLayer.path = _progressPath.CGPath;
-		_progressLayer.strokeColor = self.tintColor.CGColor;
-		_progressLayer.fillColor = [UIColor clearColor].CGColor;
-		_progressLayer.lineCap = kCALineCapSquare;
-		_progressLayer.strokeStart = 0;
-		_progressLayer.strokeEnd = 0;
-		[self.layer addSublayer:_progressLayer];
-		_progressLayer.bounds = self.layer.bounds;
-		_progressLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
-		
-		[self adjustLineWidth:1.0f];
+		[self awakeFromNib];
     }
     return self;
 }
+
+- (void)awakeFromNib
+{
+	self.layer.opacity = 0.75;
+	_indeterminate = NO;
+	_progress = 0;
+	_lineWidth = 1.0f;
+	_diameter = self.frame.size.width;
+	_maxLineWidth = _diameter / 2;
+	
+	CGRect circleRect = CGRectMake(0, 0, _diameter, _diameter);
+	_circlePath = [UIBezierPath bezierPathWithOvalInRect:circleRect];
+	_circleLayer = [CAShapeLayer layer];
+	_circleLayer.path = _circlePath.CGPath;
+	_circleLayer.strokeColor = self.tintColor.CGColor;
+	_circleLayer.fillColor = [UIColor clearColor].CGColor;
+	[self.layer addSublayer:_circleLayer];
+	_circleLayer.bounds = self.layer.bounds;
+	_circleLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
+	
+	_indeterminateArcPath =
+	[UIBezierPath
+	 bezierPathWithArcCenter:(CGPoint){CGRectGetMidX(circleRect), CGRectGetMidY(circleRect)}
+	 radius:_diameter / 2 - 1
+	 startAngle:DEGREES_TO_RADIANS(IndeterminateArcStartAngle)
+	 endAngle:DEGREES_TO_RADIANS((IndeterminateArcStartAngle + IndeterminateArcLength))
+	 clockwise:YES];
+	_indeterminateArcLayer = [CAShapeLayer layer];
+	_indeterminateArcLayer.path = _indeterminateArcPath.CGPath;
+	_indeterminateArcLayer.strokeColor = self.tintColor.CGColor;
+	_indeterminateArcLayer.fillColor = [UIColor clearColor].CGColor;
+	_indeterminateArcLayer.lineCap = kCALineCapSquare;
+	[self.layer addSublayer:_indeterminateArcLayer];
+	_indeterminateArcLayer.bounds = self.layer.bounds;
+	_indeterminateArcLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
+	
+	circleRect = CGRectMake(1, 1, _diameter - 2, _diameter - 2);
+	_progressPath = [UIBezierPath bezierPathWithOvalInRect:circleRect];
+	
+	_progressLayer = [CAShapeLayer layer];
+	_progressLayer.path = _progressPath.CGPath;
+	_progressLayer.strokeColor = self.tintColor.CGColor;
+	_progressLayer.fillColor = [UIColor clearColor].CGColor;
+	_progressLayer.lineCap = kCALineCapSquare;
+	_progressLayer.strokeStart = 0;
+	_progressLayer.strokeEnd = 0;
+	[self.layer addSublayer:_progressLayer];
+	_progressLayer.bounds = self.layer.bounds;
+	_progressLayer.position = CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
+	
+	[self adjustLineWidth:1.0f];
+}
+
+#pragma mark - Overrides
 
 - (void)tintColorDidChange
 {
 	self.circleLayer.strokeColor = self.tintColor.CGColor;
 	self.indeterminateArcLayer.strokeColor = self.tintColor.CGColor;
 	self.progressLayer.strokeColor = self.tintColor.CGColor;
-}
-
-- (void)adjustLineWidth:(CGFloat)newWidth
-{
-	_lineWidth = newWidth;
-	self.circlePath.lineWidth = _lineWidth;
-	self.circleLayer.path = self.circlePath.CGPath;
-	self.circleLayer.lineWidth = self.circlePath.lineWidth;
-	self.indeterminateArcPath.lineWidth = _lineWidth + 2;
-	self.indeterminateArcLayer.lineWidth = self.indeterminateArcPath.lineWidth;
-	self.progressLayer.lineWidth = _lineWidth;
 }
 
 #pragma mark - Public
@@ -115,9 +122,51 @@
 	[self setNeedsDisplay];
 }
 
-- (void)applyIdent
+- (void)setProgress:(CGFloat)progress
 {
-	[self startIndeterminateAnimation];
+	[self setProgress:progress animated:YES];
+}
+
+- (void)setProgress:(CGFloat)newProgress animated:(BOOL)animated
+{
+	NSParameterAssert(newProgress >= 0 && newProgress <= 1);
+	
+	[self stopIndeterminateAnimation];
+	
+	self.progressLayer.hidden = NO;
+	
+	if (_progress == 0 && newProgress > 0) {
+		self.progressLayer.lineWidth = _lineWidth + 2;
+	} else if (_progress > 0 && newProgress == 0) {
+		self.progressLayer.lineWidth = _lineWidth;
+	}
+	
+	_progress = newProgress;
+	
+	if (!animated) {
+		[CATransaction begin];
+		[CATransaction setValue:(id)kCFBooleanTrue
+						 forKey:kCATransactionDisableActions];
+	}
+	
+	self.progressLayer.strokeEnd = _progress;
+
+	if (!animated) {
+		[CATransaction commit];
+	}
+}
+
+- (void)setIndeterminate:(BOOL)newVal
+{
+	if (_indeterminate != newVal) {
+		_indeterminate = newVal;
+		if (_indeterminate) {
+			[self startIndeterminateAnimation];
+		} else {
+			[self stopIndeterminateAnimation];
+		}
+
+	}
 }
 
 - (void)startIndeterminateAnimation
@@ -158,23 +207,17 @@
 	self.indeterminateArcLayer.hidden = YES;
 }
 
-- (void)setProgress:(CGFloat)newProgress
+#pragma mark - Utility
+
+- (void)adjustLineWidth:(CGFloat)newWidth
 {
-	NSParameterAssert(newProgress >= 0 && newProgress <= 1);
-
-	[self stopIndeterminateAnimation];
-
-	self.progressLayer.hidden = NO;
-
-	if (_progress == 0 && newProgress > 0) {
-		self.progressLayer.lineWidth = _lineWidth + 2;
-	} else if (_progress > 0 && newProgress == 0) {
-		self.progressLayer.lineWidth = _lineWidth;
-	}
-	
-	_progress = newProgress;
-
-	self.progressLayer.strokeEnd = _progress;
+	_lineWidth = newWidth;
+	self.circlePath.lineWidth = _lineWidth;
+	self.circleLayer.path = self.circlePath.CGPath;
+	self.circleLayer.lineWidth = self.circlePath.lineWidth;
+	self.indeterminateArcPath.lineWidth = _lineWidth + 2;
+	self.indeterminateArcLayer.lineWidth = self.indeterminateArcPath.lineWidth;
+	self.progressLayer.lineWidth = _lineWidth;
 }
 
 @end

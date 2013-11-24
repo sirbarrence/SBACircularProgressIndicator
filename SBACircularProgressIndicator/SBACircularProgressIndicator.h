@@ -22,7 +22,23 @@
  */
 @property (nonatomic, assign) CGFloat progress;
 
+/**
+ *  Indicates whether this indicator is / should be indeterminate. Setting this to
+ *  YES starts the indeterminate animation; setting it to NO stops the animation 
+ *  and sets the progress to 0.
+ */
+@property (nonatomic, assign) BOOL indeterminate;
+
 - (void)startIndeterminateAnimation;
 - (void)stopIndeterminateAnimation;
+
+/**
+ *  Set the progress to be shown, with optional animation.
+ *
+ *  @param progress A float between 0 (0%) and 1 (100%).
+ *  @param animated Indicates whether the change should be animated.
+ *  @see `progress`
+ */
+- (void)setProgress:(CGFloat)progress animated:(BOOL)animated;
 
 @end
