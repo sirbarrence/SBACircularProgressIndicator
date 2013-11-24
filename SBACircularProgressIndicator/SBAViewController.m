@@ -12,9 +12,12 @@
 @interface SBAViewController ()
 <UITextFieldDelegate>
 
-@property (nonatomic, strong) SBACircularProgressIndicator *ind;
-@property (weak, nonatomic) IBOutlet UITextField *widthText;
+@property (weak, nonatomic) IBOutlet SBACircularProgressIndicator *progressIndicator;
+@property (weak, nonatomic) IBOutlet SBACircularProgressIndicator *indeterminateIndicator;
+@property (weak, nonatomic) IBOutlet UITextField *percentText;
 @property (weak, nonatomic) IBOutlet UIStepper *stepper;
+@property (weak, nonatomic) IBOutlet UISlider *slider;
+@property (weak, nonatomic) IBOutlet UISwitch *animatedSwitch;
 
 @end
 
@@ -23,38 +26,61 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	self.ind = [[SBACircularProgressIndicator alloc] initWithFrame:CGRectMake(50, 50, 20, 20)];
-	[self.view addSubview:self.ind];
+	self.progressIndicator.progress = 0.5f;
+	self.percentText.text = @"50";
+	self.stepper.value = 50;
+	self.slider.value = 50;
 }
 
 - (IBAction)stepperChanged:(id)sender
 {
-	[self.ind setProgress:self.stepper.value / 100];
-	self.widthText.text = [NSString stringWithFormat:@"%d", [[NSNumber numberWithFloat:self.stepper.value] intValue]];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (IBAction)doThing:(id)sender
-{
-	[self.ind startIndeterminateAnimation];
-}
-
-- (IBAction)doOtherThing:(id)sender
-{
-	[self.ind stopIndeterminateAnimation];
+	self.percentText.text =
+	[NSString stringWithFormat:@"%d",
+	 [[NSNumber numberWithDouble:self.stepper.value] intValue]];
+	self.slider.value = self.stepper.value;
+	
+	[self.progressIndicator
+	 setProgress:self.stepper.value / 100
+	 animated:self.animatedSwitch.on];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-	[self.ind setProgress:[self.widthText.text floatValue] / 100];
+	self.stepper.value = [self.percentText.text doubleValue];
+	self.slider.value = [self.percentText.text floatValue];
+
+	[self.progressIndicator
+	 setProgress:[self.percentText.text floatValue] / 100
+	 animated:self.animatedSwitch.on];
+	
 	return YES;
 }
 
+- (IBAction)sliderValueChanged:(id)sender
+{
+	self.percentText.text =
+	[NSString stringWithFormat:@"%d",
+	 [[NSNumber numberWithFloat:self.slider.value] intValue]];
+	self.stepper.value = self.slider.value;
+
+	[self.progressIndicator
+	 setProgress:self.slider.value / 100
+	 animated:self.animatedSwitch.on];
+}
+
+- (IBAction)doStart:(id)sender
+{
+	[self.indeterminateIndicator startIndeterminateAnimation];
+	// or
+//	self.indeterminateIndicator.indeterminate = YES;
+}
+
+- (IBAction)doStop:(id)sender
+{
+	[self.indeterminateIndicator stopIndeterminateAnimation];
+	// or
+//	self.indeterminateIndicator.indeterminate = NO;
+}
 
 
 @end
