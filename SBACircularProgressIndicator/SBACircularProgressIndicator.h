@@ -11,7 +11,7 @@
 @interface SBACircularProgressIndicator : UIView
 
 /**
- Specifies the width of the stroke for the circle. Defaults to 1.
+ *  Specifies the width of the stroke for the circle. Defaults to 1.
  */
 @property (nonatomic, assign) CGFloat lineWidth;
 
@@ -29,7 +29,14 @@
  */
 @property (nonatomic, assign) BOOL indeterminate;
 
+/**
+ *  Starts the indeterminate animation.
+ */
 - (void)startIndeterminateAnimation;
+
+/**
+ *  Stops the indeterminate animation.
+ */
 - (void)stopIndeterminateAnimation;
 
 /**
