@@ -8,16 +8,18 @@
 
 #import "SBAViewController.h"
 #import "SBACircularProgressIndicator.h"
+#import "SBACircularIndeterminateIndicator.h"
 
 @interface SBAViewController ()
 <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet SBACircularProgressIndicator *progressIndicator;
-@property (weak, nonatomic) IBOutlet SBACircularProgressIndicator *indeterminateIndicator;
+@property (weak, nonatomic) IBOutlet SBACircularIndeterminateIndicator *indeterminateIndicator;
 @property (weak, nonatomic) IBOutlet UITextField *percentText;
 @property (weak, nonatomic) IBOutlet UIStepper *stepper;
 @property (weak, nonatomic) IBOutlet UISlider *slider;
 @property (weak, nonatomic) IBOutlet UISwitch *animatedSwitch;
+@property (weak, nonatomic) IBOutlet UISlider *arcLengthSlider;
 
 @end
 
@@ -30,6 +32,12 @@
 	self.percentText.text = @"50";
 	self.stepper.value = 50;
 	self.slider.value = 50;
+	self.arcLengthSlider.value = self.indeterminateIndicator.arcLength;
+}
+
+- (IBAction)arcLengthSliderChanged:(UISlider*)sender
+{
+	self.indeterminateIndicator.arcLength = sender.value;
 }
 
 - (IBAction)stepperChanged:(id)sender
@@ -70,14 +78,14 @@
 
 - (IBAction)doStart:(id)sender
 {
-	[self.indeterminateIndicator startIndeterminateAnimation];
+	[self.indeterminateIndicator startAnimation];
 	// or
 //	self.indeterminateIndicator.indeterminate = YES;
 }
 
 - (IBAction)doStop:(id)sender
 {
-	[self.indeterminateIndicator stopIndeterminateAnimation];
+	[self.indeterminateIndicator stopAnimation];
 	// or
 //	self.indeterminateIndicator.indeterminate = NO;
 }

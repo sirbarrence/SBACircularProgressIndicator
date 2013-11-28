@@ -23,6 +23,7 @@
 		4C286EE9180C26CE007C7DCD /* SBACircularProgressIndicatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C286EE8180C26CE007C7DCD /* SBACircularProgressIndicatorTests.m */; };
 		4C286EF3180C26E8007C7DCD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C286EF2180C26E8007C7DCD /* QuartzCore.framework */; };
 		4C286EF6180C271A007C7DCD /* SBACircularProgressIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C286EF5180C271A007C7DCD /* SBACircularProgressIndicator.m */; };
+		4CEE9CFE1847DE6300C8E2BA /* SBACircularIndeterminateIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CEE9CFD1847DE6300C8E2BA /* SBACircularIndeterminateIndicator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,8 @@
 		4C286EF2180C26E8007C7DCD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4C286EF4180C271A007C7DCD /* SBACircularProgressIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBACircularProgressIndicator.h; sourceTree = "<group>"; };
 		4C286EF5180C271A007C7DCD /* SBACircularProgressIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBACircularProgressIndicator.m; sourceTree = "<group>"; };
+		4CEE9CFC1847DE6300C8E2BA /* SBACircularIndeterminateIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBACircularIndeterminateIndicator.h; sourceTree = "<group>"; };
+		4CEE9CFD1847DE6300C8E2BA /* SBACircularIndeterminateIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBACircularIndeterminateIndicator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,15 +122,17 @@
 		4C286EC3180C26CE007C7DCD /* SBACircularProgressIndicator */ = {
 			isa = PBXGroup;
 			children = (
+				4C286ED5180C26CE007C7DCD /* Images.xcassets */,
+				4C286ECF180C26CE007C7DCD /* Main.storyboard */,
 				4C286ECC180C26CE007C7DCD /* SBAAppDelegate.h */,
 				4C286ECD180C26CE007C7DCD /* SBAAppDelegate.m */,
-				4C286ECF180C26CE007C7DCD /* Main.storyboard */,
-				4C286ED2180C26CE007C7DCD /* SBAViewController.h */,
-				4C286ED3180C26CE007C7DCD /* SBAViewController.m */,
-				4C286ED5180C26CE007C7DCD /* Images.xcassets */,
-				4C286EC4180C26CE007C7DCD /* Supporting Files */,
+				4CEE9CFC1847DE6300C8E2BA /* SBACircularIndeterminateIndicator.h */,
+				4CEE9CFD1847DE6300C8E2BA /* SBACircularIndeterminateIndicator.m */,
 				4C286EF4180C271A007C7DCD /* SBACircularProgressIndicator.h */,
 				4C286EF5180C271A007C7DCD /* SBACircularProgressIndicator.m */,
+				4C286ED2180C26CE007C7DCD /* SBAViewController.h */,
+				4C286ED3180C26CE007C7DCD /* SBAViewController.m */,
+				4C286EC4180C26CE007C7DCD /* Supporting Files */,
 			);
 			path = SBACircularProgressIndicator;
 			sourceTree = "<group>";
@@ -262,6 +267,7 @@
 				4C286ECA180C26CE007C7DCD /* main.m in Sources */,
 				4C286ED4180C26CE007C7DCD /* SBAViewController.m in Sources */,
 				4C286EF6180C271A007C7DCD /* SBACircularProgressIndicator.m in Sources */,
+				4CEE9CFE1847DE6300C8E2BA /* SBACircularIndeterminateIndicator.m in Sources */,
 				4C286ECE180C26CE007C7DCD /* SBAAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -471,6 +477,7 @@
 				4C286EEE180C26CE007C7DCD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4C286EEF180C26CE007C7DCD /* Build configuration list for PBXNativeTarget "SBACircularProgressIndicatorTests" */ = {
 			isa = XCConfigurationList;
@@ -479,6 +486,7 @@
 				4C286EF1180C26CE007C7DCD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
